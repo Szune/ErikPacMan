@@ -4,47 +4,32 @@ namespace PacMan
 {
     class Program
     {
+        private static int OffsetX = 16;
+        private static int OffsetY = 2;
 
         static void Main( string[] args )
         {
-            int OffsetX = 16;
-            int OffsetY = 2;
             Console.Title = "ErikPacMan by Erik Iwarson";
             Console.BufferHeight = 25;
             Console.CursorVisible = false;
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Clear();
-            Console.SetCursorPosition(OffsetX, OffsetY);
-            Console.WriteLine("-------------------------------------------");
-            Console.SetCursorPosition(OffsetX, OffsetY + 1);
-            Console.WriteLine("-                                         -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 2);
-            Console.WriteLine("-               ErikPacMan                -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 3);
-            Console.WriteLine("-                                         -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 4);
-            Console.WriteLine("-            Erik Iwarson 2013            -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 5);
-            Console.WriteLine("-                                         -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 6);
-            Console.WriteLine("-           ! - Food, G - Ghost           -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 7);
-            Console.WriteLine("-                                         -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 8);
-            Console.WriteLine("-          Press Enter to start           -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 9);
-            Console.WriteLine("-                                         -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 10);
-            Console.WriteLine("-          Press Escape to exit           -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 11);
-            Console.WriteLine("-                                         -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 12);
-            Console.WriteLine("-       Press Space for highscores        -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 13);
-            Console.WriteLine("-                                         -");
-            Console.SetCursorPosition(OffsetX, OffsetY + 14);
-            Console.WriteLine("-------------------------------------------");
+            DrawLine("-------------------------------------------", 0);
+            DrawLine("-                                         -", 1);
+            DrawLine("-               ErikPacMan                -", 2);
+            DrawLine("-                                         -", 3);
+            DrawLine("-            Erik Iwarson 2013            -", 4);
+            DrawLine("-                                         -", 5);
+            DrawLine("-           ! - Food, G - Ghost           -", 6);
+            DrawLine("-                                         -", 7);
+            DrawLine("-          Press Enter to start           -", 8);
+            DrawLine("-                                         -", 9);
+            DrawLine("-          Press Escape to exit           -", 10);
+            DrawLine("-                                         -", 11);
+            DrawLine("-       Press Space for highscores        -", 12);
+            DrawLine("-                                         -", 13);
+            DrawLine("-------------------------------------------", 14);
 
             bool MenuChosen = false;
             ConsoleKey read;
@@ -58,14 +43,10 @@ namespace PacMan
                     MenuChosen = true;
                     int Difficulty = 0;
                     Console.Clear();
-                    Console.SetCursorPosition(OffsetX, OffsetY);
-                    Console.WriteLine("Difficulty:");
-                    Console.SetCursorPosition(OffsetX, OffsetY + 1);
-                    Console.WriteLine("1. Easy");
-                    Console.SetCursorPosition(OffsetX, OffsetY + 2);
-                    Console.WriteLine("2. Normal");
-                    Console.SetCursorPosition(OffsetX, OffsetY + 3);
-                    Console.WriteLine("3. Hard");
+                    DrawLine("Difficulty:", 0);
+                    DrawLine("1. Easy", 1);
+                    DrawLine("2. Normal", 2);
+                    DrawLine("3. Hard", 3);
                     Console.SetCursorPosition(OffsetX, OffsetY + 4);
                     bool DifficultyChosen = false;
                     while (!DifficultyChosen)
@@ -85,14 +66,13 @@ namespace PacMan
                                 DifficultyChosen = true;
                                 break;
                             default:
-                                Console.SetCursorPosition(OffsetX, 7);
-                                Console.WriteLine("Choose either 1, 2 or 3.");
-                                Console.SetCursorPosition(OffsetX, 6);
+                                DrawLine("Choose either 1, 2 or 3.", 5);
+                                Console.SetCursorPosition(OffsetX, OffsetY + 4);
                                 for (int i = 0; i < Console.WindowWidth; i++)
                                 {
                                     Console.Write(" ");
                                 }
-                                Console.SetCursorPosition(OffsetX, 6);
+                                Console.SetCursorPosition(OffsetX, OffsetY + 4);
                                 break;
                         }
                     }
@@ -113,9 +93,10 @@ namespace PacMan
             }
         }
 
-        void DrawLine(string text, int line)
+        private static void DrawLine(string text, int line)
         {
-
+            Console.SetCursorPosition(OffsetX, OffsetY + line);
+            Console.WriteLine(text);
         }
 
     }
