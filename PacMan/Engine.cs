@@ -145,7 +145,7 @@ namespace PacMan
 
             map.DrawMap();
 
-            Console.Title = "PacMan - Difficulty: " + DifficultyString(Difficulty);
+            Console.Title = "ErikPacMan - Difficulty: " + DifficultyString(Difficulty);
 
             GameTimer.Enabled = true; // Starta timern
         }
