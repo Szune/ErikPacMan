@@ -1,0 +1,21 @@
+D:\Users\eriw2001\AppData\Local\Temporary Projects\ConsoleApplication1\bin\Debug\PacMan.exe
+D:\Users\eriw2001\AppData\Local\Temporary Projects\ConsoleApplication1\bin\Debug\PacMan.pdb
+D:\Users\eriw2001\AppData\Local\Temporary Projects\ConsoleApplication1\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Users\eriw2001\AppData\Local\Temporary Projects\ConsoleApplication1\obj\x86\Debug\PacMan.exe
+D:\Users\eriw2001\AppData\Local\Temporary Projects\ConsoleApplication1\obj\x86\Debug\PacMan.pdb
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\obj\x86\Debug\PacMan.exe
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\obj\x86\Debug\PacMan.pdb
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\bin\Debug\PacMan.exe
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\bin\Debug\PacMan.pdb
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\obj\x86\Debug\ResolveAssemblyReference.cache
+F:\Bärbar dator BACKUP\USB-backupen\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Debug\PacMan.exe
+F:\Bärbar dator BACKUP\USB-backupen\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Debug\PacMan.pdb
+F:\Bärbar dator BACKUP\USB-backupen\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Debug\PacMan.exe
+F:\Bärbar dator BACKUP\USB-backupen\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Debug\PacMan.pdb
+F:\Bärbar dator BACKUP\USB-backupen\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Debug\ResolveAssemblyReference.cache
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Debug\PacMan.exe.config
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Debug\PacMan.exe
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Debug\PacMan.pdb
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Debug\ResolveAssemblyReference.cache
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Debug\PacMan.exe
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Debug\PacMan.pdb

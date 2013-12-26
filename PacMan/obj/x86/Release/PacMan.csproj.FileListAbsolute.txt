@@ -1,0 +1,11 @@
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\bin\Release\PacMan.exe
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\bin\Release\PacMan.pdb
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\obj\x86\Release\ResolveAssemblyReference.cache
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\obj\x86\Release\PacMan.exe
+D:\Users\eriw2001\Documents\Visual Studio 2010\Projects\PacMan\PacMan\obj\x86\Release\PacMan.pdb
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Release\PacMan.exe.config
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Release\PacMan.exe
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Release\PacMan.pdb
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Release\PacMan.exe
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\bin\Release\PacMan.pdb
+I:\C# Projekt\Erik Iwarson - PacMan\PacMan\obj\x86\Release\ResolveAssemblyReference.cache
