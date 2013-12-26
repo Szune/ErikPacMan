@@ -9,7 +9,7 @@ namespace PacMan
         {
             int OffsetX = 16;
             int OffsetY = 2;
-            Console.Title = "PacMan by Erik Iwarson";
+            Console.Title = "ErikPacMan by Erik Iwarson";
             Console.BufferHeight = 25;
             Console.CursorVisible = false;
 
@@ -20,9 +20,9 @@ namespace PacMan
             Console.SetCursorPosition(OffsetX, OffsetY + 1);
             Console.WriteLine("-                                         -");
             Console.SetCursorPosition(OffsetX, OffsetY + 2);
-            Console.WriteLine("-                                         -");
+            Console.WriteLine("-               ErikPacMan                -");
             Console.SetCursorPosition(OffsetX, OffsetY + 3);
-            Console.WriteLine("-                 PacMan                  -");
+            Console.WriteLine("-                                         -");
             Console.SetCursorPosition(OffsetX, OffsetY + 4);
             Console.WriteLine("-            Erik Iwarson 2013            -");
             Console.SetCursorPosition(OffsetX, OffsetY + 5);

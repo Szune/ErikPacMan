@@ -49,7 +49,7 @@ namespace PacMan
                 ClosedList.Add(Parent);
                 OpenList.AddRange(CheckAdjacentSquares(Parent, Parent, Destination, ClosedList, OpenList));
 
-                if (isTileInList(Target, ClosedList)) { havePath = true; }
+                if (IsTileInList(Target, ClosedList)) { havePath = true; }
                 if (OpenList.Count == 0 && havePath == false) { break; }
                 tries += 4;
             }
@@ -80,32 +80,32 @@ namespace PacMan
             List<Coordinates> WalkableSquares = new List<Coordinates>();
             
             Coordinates CheckingSquare = new Coordinates(Square.X + 1, Square.Y); // East
-            if (isTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination))
+            if (IsTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination))
             {
                 WalkableSquares.Add(new Coordinates(CheckingSquare.X, CheckingSquare.Y, CalculateHeuristic(CheckingSquare, Destination), (G + Parent.G), Parent));
             }
             
             CheckingSquare = new Coordinates(Square.X - 1, Square.Y); // West
-            if (isTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination)) {
+            if (IsTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination)) {
                 WalkableSquares.Add(new Coordinates(CheckingSquare.X, CheckingSquare.Y, CalculateHeuristic(CheckingSquare, Destination), (G + Parent.G), Parent));
             }
 
             CheckingSquare = new Coordinates(Square.X, Square.Y - 1); // North
-            if (isTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination)) {
+            if (IsTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination)) {
                 WalkableSquares.Add(new Coordinates(CheckingSquare.X, CheckingSquare.Y, CalculateHeuristic(CheckingSquare, Destination), (G + Parent.G), Parent));
             }
 
             CheckingSquare = new Coordinates(Square.X, Square.Y + 1); // South
-            if (isTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination)) {
+            if (IsTileWalkable(CheckingSquare, ClosedList, OpenList) || SamePosition(CheckingSquare, Destination)) {
                 WalkableSquares.Add(new Coordinates(CheckingSquare.X, CheckingSquare.Y, CalculateHeuristic(CheckingSquare, Destination), (G + Parent.G), Parent));
             }
 
             return WalkableSquares;
         }
 
-        public bool isTileWalkable(Coordinates Tile, List<Coordinates> ClosedList, List<Coordinates> OpenList)
+        public bool IsTileWalkable(Coordinates Tile, List<Coordinates> ClosedList, List<Coordinates> OpenList)
         {
-            return (map.IsTileWalkable(Tile) && !isTileInList(Tile, ClosedList) && !isTileInList(Tile, OpenList));
+            return (map.IsTileWalkable(Tile) && !IsTileInList(Tile, ClosedList) && !IsTileInList(Tile, OpenList));
         }
 
 
@@ -114,7 +114,7 @@ namespace PacMan
             return (G + (G * (Math.Abs(Source.X - Destination.X) + Math.Abs(Source.Y - Destination.Y)))); // Manhattan-metoden
         }
 
-        public bool isTileInList(Coordinates Tile, List<Coordinates> List)
+        public bool IsTileInList(Coordinates Tile, List<Coordinates> List)
         {
             bool isClosed = false;
             for (int i = 0; i < List.Count; i++)
