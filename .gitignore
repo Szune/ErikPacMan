@@ -19,6 +19,7 @@ TestResults
 x64/
 *_i.c
 *.vshost.exe*
+*.manifest
 *_p.c
 *.ilk
 *.meta

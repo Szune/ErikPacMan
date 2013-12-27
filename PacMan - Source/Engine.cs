@@ -108,6 +108,11 @@ namespace PacMan
                 }
             }
 
+            GameSpeed = int.Parse(ConfigurationManager.AppSettings["GameSpeed"]);
+            GameSpeed -= Difficulty * 160;
+
+            GameTimer.Interval = GameSpeed; // Skapar timern med ett interval på 'GameSpeed' millisekunder
+
             draw.ClearScreen();
             if (FirstGame)
             {
