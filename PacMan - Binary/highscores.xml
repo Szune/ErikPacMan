@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Highscores>
+	<Highscore>
+		<Name>Erik</Name>
+		<Score>2421</Score>
+		<Difficulty>Hard</Difficulty>
+	</Highscore>
+	<Highscore>
+		<Name>Erik</Name>
+		<Score>1326</Score>
+		<Difficulty>Normal</Difficulty>
+	</Highscore>
+	<Highscore>
+		<Name>Erik</Name>
+		<Score>1065</Score>
+		<Difficulty>Hard</Difficulty>
+	</Highscore>
+	<Highscore>
+		<Name>Erik</Name>
+		<Score>712</Score>
+		<Difficulty>Normal</Difficulty>
+	</Highscore>
+	<Highscore>
+		<Name>Erik</Name>
+		<Score>259</Score>
+		<Difficulty>Easy</Difficulty>
+	</Highscore>
+	<Highscore>
+		<Name>Erik</Name>
+		<Score>257</Score>
+		<Difficulty>Easy</Difficulty>
+	</Highscore>
+</Highscores>
