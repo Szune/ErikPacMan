@@ -82,7 +82,7 @@ namespace PacMan
             while (ParseKeys(read)) ;
         }
 
-        public void ChooseDifficulty()
+        private void ChooseDifficulty()
         {
             draw.ChooseDifficulty(false);
             bool done = false;
@@ -120,7 +120,7 @@ namespace PacMan
             }
         }
 
-        public void Start(bool restart = false)
+        private void Start(bool restart = false)
         {
             map.CreatureCount = 1;
 
@@ -197,7 +197,7 @@ namespace PacMan
             return false;
         }
 
-        public int CalculateScore(int experience, int difficulty, int superPower)
+        private int CalculateScore(int experience, int difficulty, int superPower)
         {
             return (difficulty * experience * 50) + (difficulty * superPower);
         }
@@ -416,7 +416,7 @@ namespace PacMan
             }
         }
 
-        public void GenerateCreatures(int amount)
+        private void GenerateCreatures(int amount)
         {
             Coordinates SpawnCoordinates = new Coordinates();
 
@@ -428,7 +428,7 @@ namespace PacMan
             }
         }
 
-        public void GenerateFood(int amount)
+        private void GenerateFood(int amount)
         {
             Coordinates SpawnCoordinates = new Coordinates();
 
@@ -443,7 +443,7 @@ namespace PacMan
         /* 
          * SpawnCreatures() is currently not in use, saved for the future
          */
-        public void SpawnCreatures()
+        private void SpawnCreatures()
         {
             for (int i = 0; i < map.Creatures.Count; i++)
             {
@@ -465,7 +465,7 @@ namespace PacMan
             }
         }
 
-        public Coordinates FindEmptyTile(int width, int height)
+        private Coordinates FindEmptyTile(int width, int height)
         {
             Coordinates EmptyTileCoordinates = new Coordinates();
             EmptyTileCoordinates.X = Generator.Next(0, width); //Console.WindowWidth - 1);
