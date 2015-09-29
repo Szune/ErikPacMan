@@ -92,8 +92,8 @@ namespace PacMan
                     /* TODO: Change Players[0] to a variable ID and add method to attack other players to allow for multiplayer */
                     if (creature.EntityType == Entity.PlayerEntity)
                     {
-                        Creature ghost = GetCreatureByID(GetCreatureIDFromTile(step));
-                        PlayerAttack(Players[0], GetCreatureByID(GetCreatureIDFromTile(step)));
+                        Creature monster = GetCreatureByID(GetCreatureIDFromTile(step));
+                        PlayerAttack(Players[0], monster);
                     }
                 }
                 else if(EntityType == Entity.PlayerEntity)
@@ -312,7 +312,6 @@ namespace PacMan
         public Player GetPlayerByID(int ID)
         {
             /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
-            Console.Title = Players[0].Health.ToString();
             return Players[0];
         }
 
