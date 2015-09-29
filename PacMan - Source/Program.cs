@@ -19,7 +19,7 @@ namespace PacMan
             DrawLine("-                                         -", 1);
             DrawLine("-               ErikPacMan                -", 2);
             DrawLine("-                                         -", 3);
-            DrawLine("-            Erik Iwarson 2013            -", 4);
+            DrawLine("-            Erik Iwarson 2015            -", 4);
             DrawLine("-                                         -", 5);
             DrawLine("-           ! - Food, G - Ghost           -", 6);
             DrawLine("-                                         -", 7);

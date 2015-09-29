@@ -14,8 +14,6 @@ namespace PacMan
         Draw draw;
         Map map;
 
-        private int Score = 0;
-
         private int MapWidth = int.Parse(ConfigurationManager.AppSettings["MapWidth"]);
         private int MapHeight = int.Parse(ConfigurationManager.AppSettings["MapHeight"]);
 
@@ -69,7 +67,15 @@ namespace PacMan
 
             if (!viewHighscore)
             {
-                Start();
+                if (FirstGame)
+                {
+                    FirstGame = false;
+                    Start();
+                }
+                else
+                {
+                    Start(true);
+                }
             }
             else
             {
@@ -127,7 +133,7 @@ namespace PacMan
 
         private void Start(bool restart = false)
         {
-            map.CreatureCount = 1;
+            map.CreatureCount = 0;
 
             if (!restart) // First time, gotta initialize stuff
             {
@@ -135,15 +141,19 @@ namespace PacMan
             }
             else
             {
-                map.Player.Health = map.Player.MaxHealth;
-                map.Player.SuperPowerSteps = 0;
+                for (int i = 0; i < map.Players.Count; i++)
+                {
+                    map.Players[i].Health = map.Players[i].MaxHealth;
+                    map.Players[i].Position = new Coordinates(map.Players[i].SpawnPosition.X, map.Players[i].SpawnPosition.Y);
+                    map.Players[i].Visible = true;
+                    map.Players[i].SuperPowerSteps = 0;
+                }
 
-                map.Creatures.RemoveRange(1, map.Creatures.Count - 1);
+                map.Creatures.Clear();
                 map.Food.Clear();
-
                 map.ResetExperience();
             }
-
+            
             GenerateCreatures(Generator.Next(int.Parse(ConfigurationManager.AppSettings["minCreatures"]) + Difficulty, int.Parse(ConfigurationManager.AppSettings["maxCreatures"]) + (Difficulty * 2))); // Higher difficulty - more ghosts
 
             GenerateFood(12 - (Difficulty * 3)); // Higher difficulty - less food
@@ -166,11 +176,14 @@ namespace PacMan
         private void Win()
         {
             GameTimer.Enabled = false;
-            if (MadeItToTheHighscores(map.Player.Experience, Difficulty, map.Player.SuperPowerSteps))
+            /*
+                TODO: Change Players[0] to a variable ID to allow for multiplayer
+            */
+            if (MadeItToTheHighscores(map.Players[0].Experience, Difficulty, map.Players[0].SuperPowerSteps))
             {
                 draw.Win(true);
                 System.Threading.Thread.Sleep(50);
-                Highscores.Add(new Highscore(Console.ReadLine(), map.Player.Experience, Difficulty, map.Player.SuperPowerSteps, DifficultyString(Difficulty)));
+                Highscores.Add(new Highscore(Console.ReadLine(), map.Players[0].Experience, Difficulty, map.Players[0].SuperPowerSteps, DifficultyString(Difficulty)));
                 Highscores.Sort();
                 SaveHighscores();
                 draw.ClearScreen();
@@ -313,21 +326,28 @@ namespace PacMan
         {
             // Game Loop
             // Förflyttar karaktären
-            if (Walking && map.Player.Health > 0)
+
+            /*
+
+                TODO: Change map.Players[0] to a variable ID to allow for multiplayer
+
+            */
+
+            if (Walking && map.Players[0].Health > 0)
             {
                 switch (WalkDirection)
                 {
                     case Direction_North:
-                        map.MoveCreature(map.Player, new Coordinates(map.Player.Coordinates.X, map.Player.Coordinates.Y - 1));
+                        map.MoveCreature(map.Players[0], new Coordinates(map.Players[0].Position.X, map.Players[0].Position.Y - 1));
                         break;
                     case Direction_East:
-                        map.MoveCreature(map.Player, new Coordinates(map.Player.Coordinates.X + 1, map.Player.Coordinates.Y));
+                        map.MoveCreature(map.Players[0], new Coordinates(map.Players[0].Position.X + 1, map.Players[0].Position.Y));
                         break;
                     case Direction_South:
-                        map.MoveCreature(map.Player, new Coordinates(map.Player.Coordinates.X, map.Player.Coordinates.Y + 1));
+                        map.MoveCreature(map.Players[0], new Coordinates(map.Players[0].Position.X, map.Players[0].Position.Y + 1));
                         break;
                     case Direction_West:
-                        map.MoveCreature(map.Player, new Coordinates(map.Player.Coordinates.X - 1, map.Player.Coordinates.Y));
+                        map.MoveCreature(map.Players[0], new Coordinates(map.Players[0].Position.X - 1, map.Players[0].Position.Y));
                         break;
                     default:
                         break;
@@ -335,14 +355,14 @@ namespace PacMan
                 Walking = false;
             }
 
-            if (map.Player.SuperPowerSteps < 1)
+            if (map.Players[0].SuperPowerSteps < 1)
             {
-                draw.StatusMessage("Score: " + CalculateScore(map.Player.Experience, Difficulty, map.Player.SuperPowerSteps).ToString());
+                draw.StatusMessage("Score: " + CalculateScore(map.Players[0].Experience, Difficulty, map.Players[0].SuperPowerSteps).ToString());
             }
             else
             {
-                draw.StatusMessage("Score: " + CalculateScore(map.Player.Experience, Difficulty, map.Player.SuperPowerSteps).ToString() + " - Super power: " + map.Player.SuperPowerSteps.ToString());
-                map.Player.SuperPowerSteps -= 1;
+                draw.StatusMessage("Score: " + CalculateScore(map.Players[0].Experience, Difficulty, map.Players[0].SuperPowerSteps).ToString() + " - Super power: " + map.Players[0].SuperPowerSteps.ToString());
+                map.Players[0].SuperPowerSteps -= 1;
             }
 
             /* For testing purposes
@@ -361,21 +381,27 @@ namespace PacMan
 
         private void PerformLogic()
         {
-            if (LogicCounter % 2 == 0)
+            if (LogicCounter == 1)
             {
                 map.MoveCreatures(); // Kallar metoden för att förflytta spökena
             }
 
-            if ((LogicCounter / 3) % 2 == 1)
+            if (LogicCounter == 2)
             {
                 map.GeneratePaths();
+                LogicCounter = 0;
             }
 
             /*if (LogicCounter == 6) { SpawnCreatures(); LogicCounter = 0; }
                 Not currently in use, possibly for the future
-             */
+             
+            */
 
-            if (map.Player.Health < 1)
+            /*
+                TODO: Change Players[0] to a variable ID to allow for multiplayer
+            */
+
+            if (map.Players[0].Health < 1)
             {
                 Lose();
             }
@@ -404,14 +430,18 @@ namespace PacMan
                     int x = int.Parse(Coordinates[0]);
                     int y = int.Parse(Coordinates[1]);
 
-                    map.Tiles.Add(new Entity("+", new Coordinates(x, y), ConsoleColor.DarkCyan));
+                    map.Tiles.Add(new Tile("+", new Coordinates(x, y), ConsoleColor.DarkCyan));
                 }
+
+                /*
+                    TODO: Change Players[0] to a variable ID to allow for multiplayer
+                */
 
                 coordinateList = read.ReadLine().Split("|".ToCharArray());
                 SpawnX = int.Parse(coordinateList[0]);
                 SpawnY = int.Parse(coordinateList[1]);
-                map.Player.Coordinates = new Coordinates(SpawnX, SpawnY);
-                map.Player.SpawnCoordinates = new Coordinates(SpawnX, SpawnY);
+                map.Players[0].Position = new Coordinates(SpawnX, SpawnY);
+                map.Players[0].SpawnPosition = new Coordinates(SpawnX, SpawnY);
 
                 read.Close();
             }
@@ -429,7 +459,8 @@ namespace PacMan
             {
                 map.CreatureCount += 1;
                 SpawnCoordinates = FindEmptyTile(MapWidth, MapHeight);
-                map.Creatures.Add(new Entity("G", SpawnCoordinates, map.Player.ID, ConsoleColor.Red, 1, map.CreatureCount));
+                /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
+                map.Creatures.Add(new Creature("G", SpawnCoordinates, map.Players[0].ID, ConsoleColor.Red, 1, map.CreatureCount));
             }
         }
 
@@ -440,7 +471,7 @@ namespace PacMan
             for (int i = 0; i < amount; i++)
             {
                 SpawnCoordinates = FindEmptyTile(MapWidth, MapHeight);
-                map.Food.Add(new Entity("!", SpawnCoordinates, ConsoleColor.Yellow, 1));
+                map.Food.Add(new Item("!", SpawnCoordinates, ConsoleColor.Yellow, 1));
             }
         }
 
@@ -454,14 +485,14 @@ namespace PacMan
             {
                 if (map.Creatures[i].Health < 1)
                 {
-                    if (map.IsTileWalkable(map.Creatures[i].Coordinates))
+                    if (map.IsTileWalkable(map.Creatures[i].Position))
                     {
                         map.Creatures[i].Spawn();
                         draw.DrawObject(map.Creatures[i]);
                     }
                     else
                     {
-                        map.Creatures[i].SpawnCoordinates = FindEmptyTile(MapWidth, MapHeight);
+                        map.Creatures[i].SpawnPosition = FindEmptyTile(MapWidth, MapHeight);
                         map.Creatures[i].Spawn();
                         draw.DrawObject(map.Creatures[i]);
                     }

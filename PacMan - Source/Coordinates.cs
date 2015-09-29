@@ -29,5 +29,10 @@ namespace PacMan
         {
             return !object.Equals(Parent, default(Coordinates));
         }
+
+        public override string ToString()
+        {
+            return "X: " + X.ToString() + " Y:" + Y.ToString();
+        }
     }
 }

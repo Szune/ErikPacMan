@@ -19,28 +19,28 @@ namespace PacMan
             if (Destination != null)
             {
                 ClearObject(Object);
-                Object.Coordinates = new Coordinates(Destination.X, Destination.Y);
+                Object.Position = new Coordinates(Destination.X, Destination.Y);
                 DrawObject(Object);
             }
         }
 
         public void DrawObject(Entity Object)
         {
-            if (!OutOfBoundaries(Object.Coordinates) && Object.Health > 0)
+            if (!OutOfBoundaries(Object.Position) && Object.Visible)
             {
-                Console.SetCursorPosition(Object.Coordinates.X, Object.Coordinates.Y);
+                Console.SetCursorPosition(Object.Position.X, Object.Position.Y);
                 Console.ForegroundColor = Object.Color;
                 Console.Write(Object.Name);
-                Console.SetCursorPosition(Object.Coordinates.X, Object.Coordinates.Y);
+                Console.SetCursorPosition(Object.Position.X, Object.Position.Y);
             }
         }
 
         public void ClearObject(Entity Object)
         {
-            if (!OutOfBoundaries(Object.Coordinates))
+            if (!OutOfBoundaries(Object.Position))
             {
                 int sourceX = Console.CursorLeft, sourceY = Console.CursorTop;
-                emptyTile.Coordinates = Object.Coordinates;
+                emptyTile.Position = new Coordinates(Object.Position.X, Object.Position.Y);
                 DrawObject(emptyTile);
                 Console.SetCursorPosition(sourceX, sourceY);
             }

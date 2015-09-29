@@ -9,13 +9,12 @@ namespace PacMan
     class Map
     {
 
-        public List<Entity> Tiles = new List<Entity>();
-        public List<Entity> Creatures = new List<Entity>();
+        public List<Tile> Tiles = new List<Tile>();
+        public List<Creature> Creatures = new List<Creature>();
+        public List<Player> Players = new List<Player>();
         public List<Entity> Food = new List<Entity>();
 
         private Draw draw;
-
-        public Entity Player;
 
         public int CreatureCount;
 
@@ -30,34 +29,37 @@ namespace PacMan
         public Map(Draw drawEngine, int SuperPowerStepsPerFood, bool friendlyFire)
         {
             draw = drawEngine;
-            Creatures.Add(new Entity("P", new Coordinates(0, 0), ConsoleColor.Green, 1, 1));
-            Player = GetCreatureByID(1);
+            //Creatures.Add(new Creature("P", new Coordinates(0, 0), 1, ConsoleColor.Green, 1)); <- old way of doing it
+            Players.Add(new Player("P", new Coordinates(0, 0), ConsoleColor.Green, 1, 1));
 
-            if (bool.Parse(ConfigurationManager.AppSettings["PlayerDebug"])) { Player.SuperPowerSteps = 15000; }
+            /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
+
+            if (bool.Parse(ConfigurationManager.AppSettings["PlayerDebug"])) { Players[0].SuperPowerSteps = 15000; }
 
             AddSuperPowerSteps = SuperPowerStepsPerFood;
             FriendlyFire = friendlyFire;
         }
 
-        public void GeneratePath(Entity Creature, Entity Target)
+        public void GeneratePathFromCreature(Creature FromCreature, Coordinates Target)
         {
-            Creature.Destination = Target.Coordinates;
-            Creature.ResetPath();
+            FromCreature.Destination = Target;
+            FromCreature.ResetPath();
             AI ai = new AI(this);
-            Creature.Path = ai.PathTo(Target.Coordinates, Creature.Coordinates);
+            FromCreature.Path = ai.PathTo(Target, FromCreature.Position);
         }
 
         public void GeneratePaths()
         {
-            for (int i = 1; i < Creatures.Count; i++)
+            for (int i = 0; i < Creatures.Count; i++)
             {
-                if (GetCreatureByID(Creatures[i].TargetID).Health > 0)
+                if (GetPlayerByID(Creatures[i].TargetID).Health > 0)
                 {
                     if (Creatures[i].Health > 0) // && !IsAdjacent(Creatures[i], GetCreatureByID(Creatures[i].TargetID)))
                     {
-                        if (!Creatures[i].hasPath() || (Creatures[i].hasPath() && !SamePosition(GetCreatureByID(Creatures[i].TargetID).Coordinates, Creatures[i].Destination)))
+                        if (!Creatures[i].hasPath() || (Creatures[i].hasPath() && !SamePosition(Players[0].Position, Creatures[i].Destination)))
                         {
-                            GeneratePath(Creatures[i], GetCreatureByID(Creatures[i].TargetID));
+                            /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
+                            GeneratePathFromCreature(Creatures[i], Players[0].Position);
                             draw.MoveObject(Creatures[i], Creatures[i].NextStep());
                         }
                     }
@@ -67,7 +69,7 @@ namespace PacMan
 
         public void MoveCreatures()
         {
-            for ( int i = 1; i < Creatures.Count; i++ )
+            for ( int i = 0; i < Creatures.Count; i++ )
             {
                 if (Creatures[i].Health > 0 && Creatures[i].hasPath())
                 {
@@ -78,15 +80,33 @@ namespace PacMan
 
         public void MoveCreature(Entity creature, Coordinates step)
         {
-            if (IsTileWalkable(step) && DistanceTo(creature.Coordinates, step) == 1)
+            if (IsTileWalkable(step) && DistanceTo(creature.Position, step) == 1)
             {
                 draw.MoveObject(creature, step);
             }
             else
             {
-                if (!SlayCreature(creature, step))
+                int EntityType = GetEntityTypeFromTile(step);
+                if(EntityType == Entity.CreatureEntity)
                 {
-                    Eat(creature, step);
+                    /* TODO: Change Players[0] to a variable ID and add method to attack other players to allow for multiplayer */
+                    if (creature.EntityType == Entity.PlayerEntity)
+                    {
+                        Creature ghost = GetCreatureByID(GetCreatureIDFromTile(step));
+                        PlayerAttack(Players[0], GetCreatureByID(GetCreatureIDFromTile(step)));
+                    }
+                }
+                else if(EntityType == Entity.PlayerEntity)
+                {
+                    if (creature.EntityType == Entity.CreatureEntity)
+                    {
+                        CreatureAttack(GetCreatureByID(creature.ID), Players[0]);
+                    }
+                }
+                else if (EntityType == Entity.ItemEntity)
+                {
+                    /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
+                    Eat(Players[0], step);
                 }
             }
         }
@@ -94,7 +114,7 @@ namespace PacMan
         public bool AllDead()
         {
             bool dead = true;
-            for (int i = 1; i < Creatures.Count; i++)
+            for (int i = 0; i < Creatures.Count; i++)
             {
                 if (Creatures[i].Health > 0)
                 {
@@ -113,18 +133,26 @@ namespace PacMan
             }
         }
 
-        public bool SlayCreature(Entity creature, Coordinates step)
+        public bool PlayerAttack(Player player, Creature target)
         {
-            if ((creature.SuperPowerSteps > 0 || creature.SuperPowerSteps == -1) && IsTileCreature(step))
+            if (player.SuperPowerSteps > 0 && CanAttack(player, target))
             {
-                int CreatureID = TileCreature(step);
-                if (Creatures[CreatureID].SuperPowerSteps < 1 && CanAttack(creature, Creatures[CreatureID]))
-                {
-                    Creatures[CreatureID].Die();
-                    draw.MoveObject(creature, step);
-                    creature.Experience += 1 + Creatures[CreatureID].Experience;
-                    return true;
-                }
+                target.Die();
+                draw.MoveObject(player, target.Position);
+                player.Experience += 1 + target.Experience;
+                return true;
+            }
+            return false;
+        }
+
+        public bool CreatureAttack(Creature creature, Player target)
+        {
+            if (target.SuperPowerSteps < 1 && CanAttack(creature, target))
+            {
+                target.Die();
+                draw.MoveObject(creature, target.Position);
+                creature.Experience += 1 + target.Experience;
+                return true;
             }
             return false;
         }
@@ -139,9 +167,10 @@ namespace PacMan
             return true;
         }
 
-        public bool Eat(Entity creature, Coordinates step)
+        public bool Eat(Player creature, Coordinates step)
         {
-            if (creature.ID == Player.ID && IsTileFood(step))
+            /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
+            if (IsTileFood(step))
             {
                 SetFoodEaten(step);
                 draw.MoveObject(creature, step);
@@ -154,16 +183,24 @@ namespace PacMan
         {
             for (int i = 0; i < Food.Count; i++)
             {
-                if (SamePosition(step, Food[i].Coordinates) && Food[i].Health > 0)
+                if (SamePosition(step, Food[i].Position) && Food[i].Visible)
                 {
-                    Food[i].Health = 0;
+                    Food[i].Visible = false;
                 }
             }
         }
 
+        public int GetEntityTypeFromTile(Coordinates Tile)
+        {
+            if (IsTileCreature(Tile)) return Entity.CreatureEntity;
+            if (IsTilePlayer(Tile)) return Entity.PlayerEntity;
+            if (IsTileFood(Tile)) return Entity.ItemEntity;
+            return Entity.UnknownEntity;
+        }
+
         public bool IsAdjacent(Entity Object1, Entity Object2)
         {
-            return (DistanceTo(Object2.Coordinates, Object1.Coordinates) == 1);
+            return (DistanceTo(Object2.Position, Object1.Position) == 1);
         }
 
         public int DistanceTo(Coordinates Source, Coordinates Destination)
@@ -181,13 +218,14 @@ namespace PacMan
             bool tileWalkable = true;
             for (int i = 0; i < Tiles.Count; i++)
             {
-                if (SamePosition(Tile, Tiles[i].Coordinates))
+                if (SamePosition(Tile, Tiles[i].Position))
                 {
                     tileWalkable = false;
                     break;
                 }
             }
 
+            if (tileWalkable) { tileWalkable = !IsTilePlayer(Tile); }
             if (tileWalkable) { tileWalkable = !IsTileCreature(Tile); }
             if (tileWalkable) { tileWalkable = !IsTileFood(Tile); }
             if (tileWalkable) { tileWalkable = !OutOfBoundaries(Tile); }
@@ -195,12 +233,22 @@ namespace PacMan
             return tileWalkable;
         }
 
+        public bool IsTilePlayer(Coordinates Tile)
+        {
+            /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
+            if (SamePosition(Tile, Players[0].Position) && Players[0].Health > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public bool IsTileCreature(Coordinates Tile)
         {
             bool tileCreature = false;
             for (int i = 0; i < Creatures.Count; i++)
             {
-                if (SamePosition(Tile, Creatures[i].Coordinates) && Creatures[i].Health > 0)
+                if (SamePosition(Tile, Creatures[i].Position) && Creatures[i].Health > 0)
                 {
                     tileCreature = true;
                     break;
@@ -209,12 +257,17 @@ namespace PacMan
             return tileCreature;
         }
 
+        public bool IsTileAnimate(Coordinates Tile)
+        {
+            return IsTileCreature(Tile) || IsTilePlayer(Tile);
+        }
+
         public bool IsTileFood(Coordinates Tile)
         {
             bool tileFood = false;
             for (int i = 0; i < Food.Count; i++)
             {
-                if (SamePosition(Tile, Food[i].Coordinates) && Food[i].Health > 0)
+                if (SamePosition(Tile, Food[i].Position) && Food[i].Visible)
                 {
                     tileFood = true;
                     break;
@@ -223,21 +276,21 @@ namespace PacMan
             return tileFood;
         }
 
-        public int TileCreature(Coordinates Tile)
+        public int GetCreatureIDFromTile(Coordinates Tile)
         {
             int CreatureID = -1;
             for (int i = 0; i < Creatures.Count; i++)
             {
-                if (SamePosition(Tile, Creatures[i].Coordinates) && Creatures[i].Health > 0)
+                if (SamePosition(Tile, Creatures[i].Position) && Creatures[i].Health > 0)
                 {
-                    CreatureID = i;
+                    CreatureID = Creatures[i].ID;
                     break;
                 }
             }
             return CreatureID;
         }
 
-        public Entity GetCreatureByID(int ID)
+        public Creature GetCreatureByID(int ID)
         {
             int CreatureID = -1;
             for (int i = 0; i < Creatures.Count; i++)
@@ -248,11 +301,19 @@ namespace PacMan
                     break;
                 }
             }
+            
             if (CreatureID == -1)
             {
-                return new Entity("null");
+                return new Creature("null");
             }
             return Creatures[CreatureID];
+        }
+
+        public Player GetPlayerByID(int ID)
+        {
+            /* TODO: Change Players[0] to a variable ID to allow for multiplayer */
+            Console.Title = Players[0].Health.ToString();
+            return Players[0];
         }
 
         public Entity GetCreatureByName(string Name)
@@ -288,7 +349,7 @@ namespace PacMan
         {
             for (int i = 0; i < Tiles.Count; i++)
             {
-                if (Tiles[i].Health > 0)
+                if (Tiles[i].Visible)
                 {
                     draw.DrawObject(Tiles[i]);
                 }
@@ -306,11 +367,22 @@ namespace PacMan
             }
         }
 
+        public void DrawPlayers()
+        {
+            for (int i = 0; i < Players.Count; i++)
+            {
+                if (Players[i].Health > 0)
+                {
+                    draw.DrawObject(Players[i]);
+                }
+            }
+        }
+
         public void DrawFood()
         {
             for (int i = 0; i < Food.Count; i++)
             {
-                if (Food[i].Health > 0)
+                if (Food[i].Visible)
                 {
                     draw.DrawObject(Food[i]);
                 }
@@ -322,6 +394,7 @@ namespace PacMan
             DrawTiles();
             DrawCreatures();
             DrawFood();
+            DrawPlayers();
         }
     }
 }
